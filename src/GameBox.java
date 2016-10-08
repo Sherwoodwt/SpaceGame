@@ -5,7 +5,7 @@ import java.awt.event.*;
 
 public class GameBox extends JPanel{
 
-	private static final int WIDTH=500, HEIGHT=500;
+	private static final int WIDTH=1000, HEIGHT=600;
 	
 	private SpaceObject spaceObj;
 	
@@ -17,7 +17,7 @@ public class GameBox extends JPanel{
 		
 		this.setFocusable(true);
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		spaceObj = new SpaceObject(new Rectangle(200, 200, 50, 50));
+		spaceObj = new SpaceObject(new Rectangle(200, 200, 10, 10));
 		this.addKeyListener(new ButtonListener());
 		
 		frame.getContentPane().add(this);
