@@ -1,5 +1,8 @@
 import java.awt.*;
+import java.io.*;
 import java.awt.event.KeyEvent;
+
+import javax.imageio.ImageIO;
 
 public class SpaceObject {
 
@@ -10,11 +13,18 @@ public class SpaceObject {
 	private ButtonManager buttons;
 	private double speed;
 	private double angle;
+	private Image picture;
 	
 	public SpaceObject(Rectangle box)
 	{
 		this.box = box;
 		this.buttons = new ButtonManager(setupButtons());
+		try{
+			picture = ImageIO.read(new File("resource/greenShip.png"));
+		} catch(IOException e){
+			System.err.println("Image not found. Game will exit");
+			System.exit(0);
+		}
 	}
 	
 	public void update()
@@ -26,9 +36,8 @@ public class SpaceObject {
 	public void draw(Graphics g)
 	{
 		Graphics2D g2 = (Graphics2D)g;
-		g2.setColor(Color.GREEN);
 		g2.rotate(angle, box.x+(box.width/2), box.y+(box.height/2));
-		g2.fill(box);
+		g2.drawImage(picture, box.x, box.y, box.width, box.height, null);
 		g2.rotate(-angle, box.x+(box.width/2), box.y+(box.height/2));
 	}
 	
@@ -51,7 +60,7 @@ public class SpaceObject {
 		double speedX = speed * (Math.sin(degreeToRadian(angle)));
 		double speedY = speed * (Math.cos(degreeToRadian(angle)));
 		box.x += speedX;
-		box.y += speedY;
+		box.y -= speedY;
 	}
 	
 	public void keyPressed(int keyCode)
