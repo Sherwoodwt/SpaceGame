@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.*;
 import java.io.*;
 import java.awt.event.KeyEvent;
 
@@ -7,17 +8,19 @@ import javax.imageio.ImageIO;
 public class SpaceObject {
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3;
-	public static final double MAXSPEED = 5, INCREMENT = .1;
+	public static final double MAXSPEED = 2, INCREMENT = .05, ROTATION_INC = .03;
 	
-	private Rectangle box;
+	private Rectangle2D.Double box;
 	private ButtonManager buttons;
-	private double speed;
+	private double acceleration;
+	private Point2D.Double linearSpeed;
 	private double angle;
 	private Image picture;
 	
 	public SpaceObject(Rectangle box)
 	{
-		this.box = box;
+		this.box = new Rectangle2D.Double(box.x, box.y, box.width, box.height);
+		this.linearSpeed = new Point2D.Double(0, 0);
 		this.buttons = new ButtonManager(setupButtons());
 		try{
 			picture = ImageIO.read(new File("resource/greenShip.png"));
@@ -37,30 +40,46 @@ public class SpaceObject {
 	{
 		Graphics2D g2 = (Graphics2D)g;
 		g2.rotate(angle, box.x+(box.width/2), box.y+(box.height/2));
-		g2.drawImage(picture, box.x, box.y, box.width, box.height, null);
+		g2.drawImage(picture, (int)box.x, (int)box.y, (int)box.width, (int)box.height, null);
 		g2.rotate(-angle, box.x+(box.width/2), box.y+(box.height/2));
 	}
 	
 	private void handleInputs()
 	{
-		if(buttons.isDown(FORWARD) && speed < MAXSPEED)
-			speed+=INCREMENT;
-		else if(buttons.isDown(BACKWARD) && speed > -MAXSPEED)
-			speed-=INCREMENT;
+		if(buttons.isDown(FORWARD))
+			acceleration = INCREMENT;
+		else if(buttons.isDown(BACKWARD))
+			acceleration = -INCREMENT;
 		else
-			normalizeSpeed();
+		{
+			acceleration = 0;
+			normalize();
+		}
 		if(buttons.isDown(LEFT))
-			angle-=INCREMENT;
+			angle-=ROTATION_INC;
 		else if(buttons.isDown(RIGHT))
-			angle+=INCREMENT;
+			angle+=ROTATION_INC;
 	}
 	
 	private void changeLocation()
 	{
-		double speedX = speed * (Math.sin(degreeToRadian(angle)));
-		double speedY = speed * (Math.cos(degreeToRadian(angle)));
-		box.x += speedX;
-		box.y -= speedY;
+		linearSpeed.x += acceleration * (Math.sin(angle));
+		linearSpeed.y += acceleration * (Math.cos(angle));
+		double absoluteSpeed = Math.sqrt((linearSpeed.x*linearSpeed.x)+(linearSpeed.y*linearSpeed.y));
+		if(absoluteSpeed > MAXSPEED)
+		{
+			linearSpeed.x += (MAXSPEED-absoluteSpeed) * (linearSpeed.x/absoluteSpeed);
+			linearSpeed.y += (MAXSPEED-absoluteSpeed) * (linearSpeed.y/absoluteSpeed);
+			absoluteSpeed = MAXSPEED;
+		}
+		box.x += linearSpeed.x;
+		box.y -= linearSpeed.y;
+	}
+	
+	private void normalize()
+	{
+		linearSpeed.x = linearSpeed.x * .99;
+		linearSpeed.y = linearSpeed.y * .99;
 	}
 	
 	public void keyPressed(int keyCode)
@@ -71,14 +90,6 @@ public class SpaceObject {
 	public void keyReleased(int keyCode)
 	{
 		buttons.keyUp(keyCode);
-	}
-	
-	private void normalizeSpeed()
-	{
-		if(speed > 0)
-			speed-=INCREMENT;
-		if(speed < 0)
-			speed+=INCREMENT;
 	}
 	
 	private double degreeToRadian(double degree)
