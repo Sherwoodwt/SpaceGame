@@ -1,9 +1,7 @@
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
-public class Player extends SpaceObject {
-
-	protected double acceleration;
+public class Player extends Ship {
 	
 	public Player(Rectangle box)
 	{
@@ -26,12 +24,6 @@ public class Player extends SpaceObject {
 		else if(buttons.isDown(RIGHT))
 			angle+=ROTATION_INC;
 	}
-
-	protected void applyAcceleration()
-	{
-		linearSpeed.x += acceleration * (Math.sin(angle));
-		linearSpeed.y += acceleration * (Math.cos(angle));
-	}
 	
 	public void keyPressed(int keyCode)
 	{
@@ -41,11 +33,6 @@ public class Player extends SpaceObject {
 	public void keyReleased(int keyCode)
 	{
 		buttons.keyUp(keyCode);
-	}
-	
-	private double degreeToRadian(double degree)
-	{
-		return (degree * Math.PI)/180.0;
 	}
 	
 	/*

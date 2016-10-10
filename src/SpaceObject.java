@@ -60,11 +60,4 @@ public abstract class SpaceObject {
 		box.x += linearSpeed.x;
 		box.y -= linearSpeed.y;
 	}
-	
-	protected void normalize()
-	{
-		linearSpeed.x = linearSpeed.x * .99;
-		linearSpeed.y = linearSpeed.y * .99;
-	}
-	
 }
