@@ -17,7 +17,28 @@ public abstract class Ship extends SpaceObject{
 	
 	protected void normalize()
 	{
+		acceleration = 0;
 		linearSpeed.x = linearSpeed.x * .99;
 		linearSpeed.y = linearSpeed.y * .99;
+	}
+	
+	protected void forward()
+	{
+		acceleration = INCREMENT;
+	}
+	
+	protected void backward()
+	{
+		acceleration = -INCREMENT;
+	}
+	
+	protected void rotateCounterClockwise()
+	{
+		angle -= ROTATION_INC;
+	}
+	
+	protected void rotateClockwise()
+	{
+		angle += ROTATION_INC;
 	}
 }

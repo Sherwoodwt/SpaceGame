@@ -11,18 +11,15 @@ public class Player extends Ship {
 	protected void handleInputs()
 	{
 		if(buttons.isDown(FORWARD))
-			acceleration = INCREMENT;
+			forward();
 		else if(buttons.isDown(BACKWARD))
-			acceleration = -INCREMENT;
+			backward();
 		else
-		{
-			acceleration = 0;
 			normalize();
-		}
 		if(buttons.isDown(LEFT))
-			angle-=ROTATION_INC;
+			rotateCounterClockwise();
 		else if(buttons.isDown(RIGHT))
-			angle+=ROTATION_INC;
+			rotateClockwise();
 	}
 	
 	public void keyPressed(int keyCode)
