@@ -1,12 +1,22 @@
-import java.awt.*;
+import java.awt.geom.*;
 
 public abstract class Ship extends SpaceObject{
 
 	protected double acceleration;
+	protected Bullet[] bullets;
 	
-	public Ship(Rectangle box, String filename)
+	public Ship(Rectangle2D.Double box, String filename)
 	{
 		super(box, filename);
+		bullets = new Bullet[3];
+	}
+	
+	protected abstract void handleInputs();
+	
+	public void update()
+	{
+		handleInputs();
+		super.update();
 	}
 	
 	protected void applyAcceleration()
@@ -40,5 +50,10 @@ public abstract class Ship extends SpaceObject{
 	protected void rotateClockwise()
 	{
 		angle += ROTATION_INC;
+	}
+	
+	protected void shoot()
+	{
+		Bullet newBullet = new Bullet(new Rectangle2D.Double(box.x, box.y, box.width, box.height));
 	}
 }

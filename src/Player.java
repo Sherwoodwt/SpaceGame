@@ -1,11 +1,14 @@
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.event.KeyEvent;
 
 public class Player extends Ship {
 	
-	public Player(Rectangle box)
+	protected ButtonManager buttons;
+
+	public Player(Rectangle2D.Double box)
 	{
 		super(box, "resource/greenShip.png");
+		buttons = new ButtonManager(setupButtons());
 	}
 	
 	protected void handleInputs()
@@ -35,7 +38,7 @@ public class Player extends Ship {
 	/*
 	 * Later will read from config file
 	 */
-	protected int[] setupButtons()
+	private int[] setupButtons()
 	{
 		int[] buttons = {KeyEvent.VK_PERIOD, 
 						 KeyEvent.VK_COMMA, 

@@ -11,16 +11,14 @@ public abstract class SpaceObject {
 	public static final double MAXSPEED = 2, INCREMENT = .05, ROTATION_INC = .03;
 	
 	protected Rectangle2D.Double box;
-	protected ButtonManager buttons;
 	protected Point2D.Double linearSpeed;
 	protected double angle;
 	protected Image picture;
 	
-	public SpaceObject(Rectangle box, String filename)
+	public SpaceObject(Rectangle2D.Double box, String filename)
 	{
-		this.box = new Rectangle2D.Double(box.x, box.y, box.width, box.height);
+		this.box = box;
 		this.linearSpeed = new Point2D.Double(0, 0);
-		this.buttons = new ButtonManager(setupButtons());
 		try{
 			picture = ImageIO.read(new File(filename));
 		} catch(IOException e){
@@ -29,13 +27,10 @@ public abstract class SpaceObject {
 		}
 	}
 	
-	protected abstract void handleInputs();
 	protected abstract void applyAcceleration();
-	protected abstract int[] setupButtons();
 	
 	public void update()
 	{
-		handleInputs();
 		changeLocation();
 	}
 	
