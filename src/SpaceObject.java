@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 public abstract class SpaceObject {
 
-	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3;
+	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
 	public static final double MAXSPEED = 2, INCREMENT = .05, ROTATION_INC = .03;
 	
 	protected Rectangle2D.Double box;

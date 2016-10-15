@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 
 public class GameBox extends JPanel{
 
@@ -17,7 +18,7 @@ public class GameBox extends JPanel{
 		
 		this.setFocusable(true);
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		player = new Player(new Rectangle(200, 200, 10, 10));
+		player = new Player(new Rectangle2D.Double(200, 200, 10, 10));
 		this.addKeyListener(new ButtonListener());
 		
 		frame.getContentPane().add(this);

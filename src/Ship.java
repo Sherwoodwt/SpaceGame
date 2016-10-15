@@ -1,22 +1,39 @@
+import java.awt.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
 
 public abstract class Ship extends SpaceObject{
 
 	protected double acceleration;
-	protected Bullet[] bullets;
+	protected ArrayList<Bullet> bullets;
 	
 	public Ship(Rectangle2D.Double box, String filename)
 	{
 		super(box, filename);
-		bullets = new Bullet[3];
+		bullets = new ArrayList<Bullet>();
 	}
 	
 	protected abstract void handleInputs();
 	
+	@Override
 	public void update()
 	{
 		handleInputs();
 		super.update();
+		for(Bullet bullet : bullets)
+		{
+			bullet.update();
+		}
+	}
+	
+	@Override
+	public void draw(Graphics g)
+	{
+		super.draw(g);
+		for(Bullet bullet : bullets)
+		{
+			bullet.draw(g);
+		}
 	}
 	
 	protected void applyAcceleration()
@@ -54,6 +71,7 @@ public abstract class Ship extends SpaceObject{
 	
 	protected void shoot()
 	{
-		Bullet newBullet = new Bullet(new Rectangle2D.Double(box.x, box.y, box.width, box.height));
+		Bullet newBullet = new Bullet(new Rectangle2D.Double(box.x, box.y, box.width/10, box.height/10), angle);
+		bullets.add(newBullet);
 	}
 }

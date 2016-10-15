@@ -23,6 +23,8 @@ public class Player extends Ship {
 			rotateCounterClockwise();
 		else if(buttons.isDown(RIGHT))
 			rotateClockwise();
+		if(buttons.isDown(SHOOT))
+			shoot();
 	}
 	
 	public void keyPressed(int keyCode)
@@ -43,7 +45,8 @@ public class Player extends Ship {
 		int[] buttons = {KeyEvent.VK_PERIOD, 
 						 KeyEvent.VK_COMMA, 
 						 KeyEvent.VK_Z, 
-						 KeyEvent.VK_X};
+						 KeyEvent.VK_X,
+						 KeyEvent.VK_SHIFT};
 		return buttons;
 	}
 }
