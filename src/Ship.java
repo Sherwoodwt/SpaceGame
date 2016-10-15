@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public abstract class Ship extends SpaceObject{
@@ -29,11 +30,11 @@ public abstract class Ship extends SpaceObject{
 	@Override
 	public void draw(Graphics g)
 	{
-		super.draw(g);
 		for(Bullet bullet : bullets)
 		{
 			bullet.draw(g);
 		}
+		super.draw(g);
 	}
 	
 	protected void applyAcceleration()
@@ -71,7 +72,8 @@ public abstract class Ship extends SpaceObject{
 	
 	protected void shoot()
 	{
-		Bullet newBullet = new Bullet(new Rectangle2D.Double(box.x, box.y, box.width/10, box.height/10), angle);
+		Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
+		Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle);
 		bullets.add(newBullet);
 	}
 }
