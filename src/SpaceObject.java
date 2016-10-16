@@ -29,9 +29,10 @@ public abstract class SpaceObject {
 	
 	protected abstract void applyAcceleration();
 	
-	public void update()
+	public int update()
 	{
 		changeLocation();
+		return 0;
 	}
 	
 	public void draw(Graphics g)
