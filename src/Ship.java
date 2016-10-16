@@ -19,8 +19,8 @@ public abstract class Ship extends SpaceObject{
 	@Override
 	public void update()
 	{
-		handleInputs();
 		super.update();
+		handleInputs();
 		for(Bullet bullet : bullets)
 		{
 			bullet.update();
@@ -73,6 +73,7 @@ public abstract class Ship extends SpaceObject{
 	protected void shoot()
 	{
 		Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
+		rotatePoint(bulletLocation);
 		Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle);
 		bullets.add(newBullet);
 	}

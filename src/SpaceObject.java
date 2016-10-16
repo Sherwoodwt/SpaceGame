@@ -55,4 +55,10 @@ public abstract class SpaceObject {
 		box.x += linearSpeed.x;
 		box.y -= linearSpeed.y;
 	}
+	
+	protected void rotatePoint(Point2D.Double point)
+	{
+		point.x += box.height/2 * Math.sin(angle);
+		point.y -= box.height/2 * Math.cos(angle);
+	}
 }
