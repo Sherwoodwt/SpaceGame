@@ -8,7 +8,7 @@ public class Bullet extends SpaceObject{
 	
 	public Bullet(Rectangle2D.Double box, double angle)
 	{
-		super(box, 2, "resource/bullet.png");
+		super(box, 3, "resource/bullet.png");
 		linearSpeed.x = Math.sin(angle) * 20;
 		linearSpeed.y = Math.cos(angle) * 20;
 		lifetime = 0;
