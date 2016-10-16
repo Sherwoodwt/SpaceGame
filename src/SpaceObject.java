@@ -8,17 +8,19 @@ import javax.imageio.ImageIO;
 public abstract class SpaceObject {
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
-	public static final double MAXSPEED = 2, INCREMENT = .05, ROTATION_INC = .03;
+	public static final double INCREMENT = .05, ROTATION_INC = .03;
 	
 	protected Rectangle2D.Double box;
 	protected Point2D.Double linearSpeed;
 	protected double angle;
 	protected Image picture;
+	protected double maxSpeed;
 	
-	public SpaceObject(Rectangle2D.Double box, String filename)
+	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String filename)
 	{
 		this.box = box;
 		this.linearSpeed = new Point2D.Double(0, 0);
+		this.maxSpeed = maxSpeed;
 		try{
 			picture = ImageIO.read(new File(filename));
 		} catch(IOException e){
@@ -47,11 +49,11 @@ public abstract class SpaceObject {
 	{
 		applyAcceleration();
 		double absoluteSpeed = Math.sqrt((linearSpeed.x*linearSpeed.x)+(linearSpeed.y*linearSpeed.y));
-		if(absoluteSpeed > MAXSPEED)
+		if(absoluteSpeed > maxSpeed)
 		{
-			linearSpeed.x += (MAXSPEED-absoluteSpeed) * (linearSpeed.x/absoluteSpeed);
-			linearSpeed.y += (MAXSPEED-absoluteSpeed) * (linearSpeed.y/absoluteSpeed);
-			absoluteSpeed = MAXSPEED;
+			linearSpeed.x += (maxSpeed-absoluteSpeed) * (linearSpeed.x/absoluteSpeed);
+			linearSpeed.y += (maxSpeed-absoluteSpeed) * (linearSpeed.y/absoluteSpeed);
+			absoluteSpeed = maxSpeed;
 		}
 		box.x += linearSpeed.x;
 		box.y -= linearSpeed.y;

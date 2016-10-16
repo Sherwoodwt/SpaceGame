@@ -2,15 +2,15 @@ import java.awt.geom.*;
 
 public class Bullet extends SpaceObject{
 	
-	private static int MAX_LIFE = 300;
+	private static int MAX_LIFE = 200;
 
 	private int lifetime;
 	
 	public Bullet(Rectangle2D.Double box, double angle)
 	{
-		super(box, "resource/bullet.png");
-		linearSpeed.x = Math.sin(angle) * 10;
-		linearSpeed.y = Math.cos(angle) * 10;
+		super(box, 2, "resource/bullet.png");
+		linearSpeed.x = Math.sin(angle) * 20;
+		linearSpeed.y = Math.cos(angle) * 20;
 		lifetime = 0;
 	}
 	

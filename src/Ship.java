@@ -12,7 +12,7 @@ public abstract class Ship extends SpaceObject{
 	
 	public Ship(Rectangle2D.Double box, String filename)
 	{
-		super(box, filename);
+		super(box, 1.5, filename);
 		bullets = new ArrayList<Bullet>();
 	}
 	
