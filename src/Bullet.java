@@ -1,4 +1,5 @@
 import java.awt.geom.*;
+import java.awt.Dimension;
 
 public class Bullet extends SpaceObject{
 	
@@ -6,9 +7,9 @@ public class Bullet extends SpaceObject{
 
 	private int lifetime;
 	
-	public Bullet(Rectangle2D.Double box, double angle)
+	public Bullet(Rectangle2D.Double box, double angle, Dimension screen)
 	{
-		super(box, 3, "resource/bullet.png");
+		super(box, 3, "resource/bullet.png", screen);
 		linearSpeed.x = Math.sin(angle) * 20;
 		linearSpeed.y = Math.cos(angle) * 20;
 		lifetime = 0;

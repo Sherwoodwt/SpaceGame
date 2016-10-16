@@ -18,9 +18,9 @@ public class Ship extends SpaceObject{
 	protected ButtonManager buttons;
 	
 	
-	public Ship(Rectangle2D.Double box, String imageFile, String controlFile)
+	public Ship(Rectangle2D.Double box, String imageFile, String controlFile, Dimension screen)
 	{
-		super(box, 1.5, imageFile);
+		super(box, 1.5, imageFile, screen);
 		bullets = new ArrayList<Bullet>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 	}
@@ -97,7 +97,7 @@ public class Ship extends SpaceObject{
 		{
 			Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
 			rotatePoint(bulletLocation);
-			Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle);
+			Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle, screenDimensions);
 			bullets.add(newBullet);
 			shootCounter = 0;
 		}

@@ -14,12 +14,14 @@ public abstract class SpaceObject {
 	protected double angle;
 	protected Image picture;
 	protected double maxSpeed;
+	protected Dimension screenDimensions;
 	
-	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String imageFile)
+	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String imageFile, Dimension screen)
 	{
 		this.box = box;
 		this.linearSpeed = new Point2D.Double(0, 0);
 		this.maxSpeed = maxSpeed;
+		this.screenDimensions = screen;
 		try{
 			picture = ImageIO.read(new File(imageFile));
 		} catch(IOException e){
@@ -33,6 +35,7 @@ public abstract class SpaceObject {
 	public int update()
 	{
 		changeLocation();
+		wrapScreen();
 		return 0;
 	}
 	
@@ -62,5 +65,17 @@ public abstract class SpaceObject {
 	{
 		point.x += box.height/2 * Math.sin(angle);
 		point.y -= box.height/2 * Math.cos(angle);
+	}
+	
+	protected void wrapScreen()
+	{
+		if(box.x + box.width > screenDimensions.width)
+			box.x = 0;
+		else if(box.x < 0)
+			box.x = screenDimensions.width - box.width;
+		if(box.y + box.height > screenDimensions.height)
+			box.y = 0;
+		else if(box.y < 0)
+			box.y = screenDimensions.height - box.height;
 	}
 }
