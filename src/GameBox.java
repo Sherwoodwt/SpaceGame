@@ -8,9 +8,11 @@ import java.awt.geom.Rectangle2D.Double;
 public class GameBox extends JPanel{
 
 	private static final int WIDTH=1000, HEIGHT=600;
+	private static final int PLAY=0, PAUSE=1;
 	
 	private Ship ship1;
 	private Ship ship2;
+	private int state;
 	
 	public GameBox()
 	{
@@ -34,8 +36,11 @@ public class GameBox extends JPanel{
 	@Override
 	public void update(Graphics g)
 	{
-		ship1.update();
-		ship2.update();
+		if(state == PLAY)
+		{
+			ship1.update();
+			ship2.update();
+		}
 	}
 	
 	@Override
@@ -46,10 +51,27 @@ public class GameBox extends JPanel{
 		this.update(bg);
 		g.setColor(Color.BLACK);
 		g.fillRect(0,  0, WIDTH, HEIGHT);
-		ship1.draw(bg);
-		ship2.draw(bg);
+		if(state == PLAY)
+		{
+			ship1.draw(bg);
+			ship2.draw(bg);
+		}
+		else if(state == PAUSE)
+		{
+			bg.setColor(Color.WHITE);
+			bg.drawString("Press ESCAPE to unpause", WIDTH/2, HEIGHT/2);
+			bg.drawString("Press Q to quit", WIDTH/2, HEIGHT/2 + 40);
+		}
 		g.drawImage(bfImage, 0, 0, WIDTH, HEIGHT, null);
 		repaint();
+	}
+	
+	private void pause()
+	{
+		if(state == PLAY)
+			state = PAUSE;
+		else if(state == PAUSE)
+			state = PLAY;
 	}
 
 	
@@ -57,6 +79,12 @@ public class GameBox extends JPanel{
 	{
 		public void keyPressed(KeyEvent e)
 		{
+			if(state == PAUSE && e.getKeyCode() == KeyEvent.VK_Q)
+			{
+				//quit to main menu
+			}
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				pause();
 			ship1.keyPressed(e.getKeyCode());
 			ship2.keyPressed(e.getKeyCode());
 		}
