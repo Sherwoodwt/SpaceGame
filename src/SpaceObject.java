@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 
 public abstract class SpaceObject {
 
-	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
 	public static final double INCREMENT = .05, ROTATION_INC = .03;
 	
 	protected Rectangle2D.Double box;
@@ -16,13 +15,13 @@ public abstract class SpaceObject {
 	protected Image picture;
 	protected double maxSpeed;
 	
-	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String filename)
+	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String imageFile)
 	{
 		this.box = box;
 		this.linearSpeed = new Point2D.Double(0, 0);
 		this.maxSpeed = maxSpeed;
 		try{
-			picture = ImageIO.read(new File(filename));
+			picture = ImageIO.read(new File(imageFile));
 		} catch(IOException e){
 			System.err.println("Image not found. Game will exit");
 			System.exit(0);

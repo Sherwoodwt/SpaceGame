@@ -3,9 +3,12 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.*;
 
 public class Ship extends SpaceObject{
 
+	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
 	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20;
 	
 	protected double acceleration;
@@ -15,11 +18,11 @@ public class Ship extends SpaceObject{
 	protected ButtonManager buttons;
 	
 	
-	public Ship(Rectangle2D.Double box, String filename)
+	public Ship(Rectangle2D.Double box, String imageFile, String controlFile)
 	{
-		super(box, 1.5, filename);
+		super(box, 1.5, imageFile);
 		bullets = new ArrayList<Bullet>();
-		buttons = new ButtonManager(setupButtons());
+		buttons = new ButtonManager(setupButtons(controlFile));
 	}
 	
 	@Override
@@ -126,13 +129,26 @@ public class Ship extends SpaceObject{
 	/*
 	 * Later will read from config file
 	 */
-	private int[] setupButtons()
+	private int[] setupButtons(String controlFile)
 	{
-		int[] buttons = {KeyEvent.VK_PERIOD, 
-						 KeyEvent.VK_COMMA, 
-						 KeyEvent.VK_Z, 
-						 KeyEvent.VK_X,
-						 KeyEvent.VK_SHIFT};
+		Scanner fin = null;
+		int[] buttons = new int[5];
+		try{
+			fin = new Scanner(new File(controlFile));
+			int counter = 0;
+			while(fin.hasNext())
+			{
+				String line = fin.nextLine();
+				String[] split = line.split(":");
+				buttons[counter] = KeyEvent.getExtendedKeyCodeForChar(split[1].charAt(0));
+				counter++;
+			}
+		} catch(Exception e){
+			System.out.println("ERROR LOADING CONTROLS FROM "+controlFile);
+		} finally{
+			if(fin != null)
+				fin.close();
+		}
 		return buttons;
 	}
 	
