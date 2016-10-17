@@ -23,7 +23,10 @@ public class Bullet extends SpaceObject{
 		super.update();
 		boolean hit = checkCollideWithEnemy();
 		if(hit)
+		{
+			enemy.hit();
 			return DEAD;
+		}
 		lifetime++;
 		if(lifetime < MAX_LIFE)
 			return ALIVE;
