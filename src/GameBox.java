@@ -25,6 +25,8 @@ public class GameBox extends JPanel{
 		Dimension screenDimensions = new Dimension(WIDTH, HEIGHT);
 		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "resource/greenShip.png", "resource/player1config.cnfg", screenDimensions);
 		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "resource/blueShip.png", "resource/player2config.cnfg", screenDimensions);
+		ship1.setEnemy(ship2);
+		ship2.setEnemy(ship1);
 		
 		this.addKeyListener(new ButtonListener());
 		
@@ -38,8 +40,8 @@ public class GameBox extends JPanel{
 	{
 		if(state == PLAY)
 		{
-			ship1.update();
-			ship2.update();
+			int state1 = ship1.update();
+			int state2 = ship2.update();
 		}
 	}
 	

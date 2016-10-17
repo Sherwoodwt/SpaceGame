@@ -9,9 +9,12 @@ public abstract class SpaceObject {
 
 	public static final double INCREMENT = .05, ROTATION_INC = .03;
 	
+	public static int DEAD=0, ALIVE=1;
+	
 	protected Rectangle2D.Double box;
 	protected Point2D.Double linearSpeed;
 	protected double angle;
+	protected double acceleration;
 	protected Image picture;
 	protected double maxSpeed;
 	protected Dimension screenDimensions;
@@ -63,9 +66,16 @@ public abstract class SpaceObject {
 	
 	protected void rotatePoint(Point2D.Double point)
 	{
-		point.x += box.height/2 * Math.sin(angle);
-		point.y -= box.height/2 * Math.cos(angle);
+		double centerX = box.x+box.width/2;
+		double centerY = box.y+box.height/2;
+		point.x = point.x - centerX;
+		point.y = point.y - centerY;
+		double rotatedX = (point.x*Math.cos(angle)) - (point.y*Math.sin(angle));
+		double rotatedY = (point.y*Math.cos(angle)) + (point.x*Math.sin(angle));
+		point.x = rotatedX + centerX;
+		point.y = rotatedY + centerY;
 	}
+	
 	
 	protected void wrapScreen()
 	{
