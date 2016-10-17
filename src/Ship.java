@@ -63,13 +63,6 @@ public class Ship extends SpaceObject{
 			bullet.draw(g);
 		}
 		super.draw(g);
-		//
-		g.setColor(Color.WHITE);
-		for(int i = 0; i < points.length; i++)
-		{
-			g.fillRect((int)points[i].x, (int)points[i].y, 2, 2);
-		}
-		//
 	}
 	
 	protected void applyAcceleration()
@@ -196,5 +189,10 @@ public class Ship extends SpaceObject{
 	public void hit()
 	{
 		state = DEAD;
+	}
+	
+	public Point2D.Double getPoint(int i)
+	{
+		return points[i];
 	}
 }

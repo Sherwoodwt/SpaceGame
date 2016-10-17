@@ -32,10 +32,20 @@ public class Bullet extends SpaceObject{
 	
 	private boolean checkCollideWithEnemy()
 	{
-		boolean hit = false;
+		int counter  = 0;
 		Point2D.Double point = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
-		
-		return hit;
+		for(int i =0; i < 3; i++)
+		{
+			Point2D.Double start = enemy.getPoint(i);
+			Point2D.Double end = enemy.getPoint((i+1)%3);
+			//cross product of end-start x point-start vectors
+			double[] vec1 = new double[] {end.x-start.x, end.y-start.y};
+			double[] vec2 = new double[] {point.x-start.x, point.y-start.y};
+			double cross = vec1[0]*vec2[1] - vec1[1]*vec2[0];
+			if(cross < 0)
+				counter++;
+		}
+		return counter >= 3;
 	}
 	
 	protected void applyAcceleration()
