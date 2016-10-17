@@ -28,6 +28,7 @@ public class Ship extends SpaceObject{
 		points = new Point2D.Double[3];
 		for(int i = 0; i < points.length; i++)
 			points[i] = new Point2D.Double();
+		state = ALIVE;
 		bullets = new ArrayList<Bullet>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 	}
@@ -35,34 +36,40 @@ public class Ship extends SpaceObject{
 	@Override
 	public int update()
 	{
-		super.update();
-		setupPoints();
-		handleInputs();
-		if(shootCounter < SHOOT_LIMIT)
-			shootCounter++;
-		ArrayList<Bullet> shitlist = new ArrayList<Bullet>();
-		for(Bullet bullet : bullets)
+		if(state == ALIVE)
 		{
-			int result = bullet.update();
-			if(result == 0)
-				shitlist.add(bullet);
+			super.update();
+			setupPoints();
+			handleInputs();
+			if(shootCounter < SHOOT_LIMIT)
+				shootCounter++;
+			ArrayList<Bullet> shitlist = new ArrayList<Bullet>();
+			for(Bullet bullet : bullets)
+			{
+				int result = bullet.update();
+				if(result == 0)
+					shitlist.add(bullet);
+			}
+			for(Bullet bullet : shitlist)
+			{
+				bullets.remove(bullet);
+			}
+			shitlist = null;
 		}
-		for(Bullet bullet : shitlist)
-		{
-			bullets.remove(bullet);
-		}
-		shitlist = null;
 		return state;
 	}
 	
 	@Override
 	public void draw(Graphics g)
 	{
-		for(Bullet bullet : bullets)
+		if(state == ALIVE)
 		{
-			bullet.draw(g);
+			for(Bullet bullet : bullets)
+			{
+				bullet.draw(g);
+			}
+			super.draw(g);
 		}
-		super.draw(g);
 	}
 	
 	protected void applyAcceleration()
