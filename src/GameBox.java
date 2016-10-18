@@ -9,7 +9,7 @@ public class GameBox extends JPanel{
 
 	private static final int WIDTH=1000, HEIGHT=600;
 	private static final int PLAY=0, PAUSE=1, SCORE=2;
-	private static final int SHIP_KILL_LIMIT=50, SHOW_SCORE_LIMIT=600;
+	private static final int SHIP_KILL_LIMIT=50, SHOW_SCORE_LIMIT=400;
 	
 	private Dimension screenDimensions;
 	private Ship ship1;
@@ -65,8 +65,8 @@ public class GameBox extends JPanel{
 		BufferedImage bfImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics bg = bfImage.getGraphics();
 		this.update(bg);
-		g.setColor(Color.BLACK);
-		g.fillRect(0,  0, WIDTH, HEIGHT);
+		bg.setColor(Color.BLACK);
+		bg.fillRect(0,  0, WIDTH, HEIGHT);
 		if(state == PLAY)
 		{
 			ship1.draw(bg);

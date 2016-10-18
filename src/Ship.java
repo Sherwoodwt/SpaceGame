@@ -13,6 +13,7 @@ public class Ship extends SpaceObject{
 	private static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
 	
 	protected ArrayList<Bullet> bullets;
+	protected ArrayList<VaporTrail> vaporTrails;
 	private int shootCounter;
 	private boolean shootReady;
 	protected ButtonManager buttons;
@@ -38,6 +39,7 @@ public class Ship extends SpaceObject{
 			points[i] = new Point2D.Double();
 		state = ALIVE;
 		bullets = new ArrayList<Bullet>();
+		vaporTrails = new ArrayList<VaporTrail>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 	}
 	
@@ -65,6 +67,25 @@ public class Ship extends SpaceObject{
 				bullets.remove(bullet);
 			}
 			shitlist = null;
+			
+			for(int i = 0; i < points.length; i++)
+			{
+				vaporTrails.add(new VaporTrail(new Rectangle2D.Double(points[i].x, points[i].y, box.width/10, box.height/10),
+								0, screenDimensions));
+			}
+			
+			ArrayList<VaporTrail> shitlist2 = new ArrayList<VaporTrail>();
+			for(VaporTrail v : vaporTrails)
+			{
+				int result = v.update();
+				if(result == DEAD)
+					shitlist2.add(v);
+			}
+			for(VaporTrail v : shitlist2)
+			{
+				vaporTrails.remove(v);
+			}
+			shitlist2 = null;
 		}
 		return state;
 	}
@@ -76,6 +97,10 @@ public class Ship extends SpaceObject{
 		for(Bullet bullet : bullets)
 		{
 			bullet.draw(g);
+		}
+		for(VaporTrail v : vaporTrails)
+		{
+			v.draw(g);
 		}
 		super.draw(g);
 	}
