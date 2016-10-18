@@ -8,11 +8,16 @@ import java.awt.geom.Rectangle2D.Double;
 public class GameBox extends JPanel{
 
 	private static final int WIDTH=1000, HEIGHT=600;
-	private static final int PLAY=0, PAUSE=1;
+	private static final int PLAY=0, PAUSE=1, SCORE=2;
+	private static final int SHIP_KILL_LIMIT=50, SHOW_SCORE_LIMIT=600;
 	
+	private Dimension screenDimensions;
 	private Ship ship1;
 	private Ship ship2;
 	private int state;
+	private int score1, score2;
+	
+	private int shipKilledCounter, showScoreCounter;
 	
 	public GameBox()
 	{
@@ -22,11 +27,8 @@ public class GameBox extends JPanel{
 		
 		this.setFocusable(true);
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		Dimension screenDimensions = new Dimension(WIDTH, HEIGHT);
-		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "resource/greenShip.png", "resource/player1config.cnfg", screenDimensions);
-		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "resource/blueShip.png", "resource/player2config.cnfg", screenDimensions);
-		ship1.setEnemy(ship2);
-		ship2.setEnemy(ship1);
+		screenDimensions = new Dimension(WIDTH, HEIGHT);
+		resetShips();
 		
 		this.addKeyListener(new ButtonListener());
 		
@@ -42,6 +44,18 @@ public class GameBox extends JPanel{
 		{
 			int state1 = ship1.update();
 			int state2 = ship2.update();
+			if(state1 == Ship.DEAD)
+			{
+				score2 += shipKilled();
+			}
+			else if(state2 == Ship.DEAD)
+			{
+				score1 += shipKilled();
+			}
+		}
+		else if(state == SCORE)
+		{
+			showScore();
 		}
 	}
 	
@@ -64,6 +78,14 @@ public class GameBox extends JPanel{
 			bg.drawString("Press ESCAPE to unpause", WIDTH/2, HEIGHT/2);
 			bg.drawString("Press Q to quit", WIDTH/2, HEIGHT/2 + 40);
 		}
+		else if(state == SCORE)
+		{
+			bg.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
+			bg.setColor(Color.GREEN);
+			bg.drawString("Green: " + score1, WIDTH/4, HEIGHT/2);
+			bg.setColor(Color.BLUE);
+			bg.drawString("Blue: " + score2, WIDTH/3 * 2, HEIGHT/2);
+		}
 		g.drawImage(bfImage, 0, 0, WIDTH, HEIGHT, null);
 		repaint();
 	}
@@ -74,6 +96,44 @@ public class GameBox extends JPanel{
 			state = PAUSE;
 		else if(state == PAUSE)
 			state = PLAY;
+	}
+	
+	private int shipKilled()
+	{
+		int scoreIncrease = 0;
+		if(shipKilledCounter < SHIP_KILL_LIMIT)
+		{
+			shipKilledCounter++;
+		}
+		else
+		{
+			shipKilledCounter = 0;
+			state = SCORE;
+			scoreIncrease++;
+		}
+		return scoreIncrease;
+	}
+	
+	private void showScore()
+	{
+		if(showScoreCounter < SHOW_SCORE_LIMIT)
+		{
+			showScoreCounter++;
+		}
+		else
+		{
+			showScoreCounter = 0;
+			resetShips();
+			state = PLAY;
+		}
+	}
+	
+	private void resetShips()
+	{
+		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "resource/greenShip.png", "resource/player1config.cnfg", screenDimensions);
+		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "resource/blueShip.png", "resource/player2config.cnfg", screenDimensions);
+		ship1.setEnemy(ship2);
+		ship2.setEnemy(ship1);
 	}
 
 	
