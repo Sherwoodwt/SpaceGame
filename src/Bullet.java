@@ -10,7 +10,8 @@ public class Bullet extends SpaceObject{
 	
 	public Bullet(Rectangle2D.Double box, double angle, Ship enemy, Dimension screen)
 	{
-		super(box, 3, "resource/bullet.png", screen);
+		super(box, 3, screen);
+		setupImages();
 		this.enemy = enemy;
 		linearSpeed.x = Math.sin(angle) * 20;
 		linearSpeed.y = Math.cos(angle) * 20;
@@ -54,5 +55,10 @@ public class Bullet extends SpaceObject{
 	protected void applyAcceleration()
 	{
 		//does not apply
+	}
+	
+	protected void setupImages()
+	{
+		picture = readImage("bullet.png");
 	}
 }

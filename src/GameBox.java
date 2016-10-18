@@ -130,8 +130,8 @@ public class GameBox extends JPanel{
 	
 	private void resetShips()
 	{
-		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "resource/greenShip.png", "resource/player1config.cnfg", screenDimensions);
-		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "resource/blueShip.png", "resource/player2config.cnfg", screenDimensions);
+		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "green", "resource/player1config.cnfg", screenDimensions);
+		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "blue", "resource/player2config.cnfg", screenDimensions);
 		ship1.setEnemy(ship2);
 		ship2.setEnemy(ship1);
 	}

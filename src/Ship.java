@@ -10,6 +10,7 @@ public class Ship extends SpaceObject{
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
 	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20;
+	private static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
 	
 	protected ArrayList<Bullet> bullets;
 	private int shootCounter;
@@ -17,14 +18,21 @@ public class Ship extends SpaceObject{
 	protected ButtonManager buttons;
 	private int state;
 	
+	protected int imageState;
+	protected Image[] imageList;
+	
 	private Point2D.Double[] points;
 	
 	private Ship enemy;
 	
+	private String imageFileColor;
 	
-	public Ship(Rectangle2D.Double box, String imageFile, String controlFile, Dimension screen)
+	
+	public Ship(Rectangle2D.Double box, String imageFileColor, String controlFile, Dimension screen)
 	{
-		super(box, 1.5, imageFile, screen);
+		super(box, 1.5, screen);
+		this.imageFileColor = imageFileColor;
+		setupImages();
 		points = new Point2D.Double[3];
 		for(int i = 0; i < points.length; i++)
 			points[i] = new Point2D.Double();
@@ -43,6 +51,8 @@ public class Ship extends SpaceObject{
 			handleInputs();
 			if(shootCounter < SHOOT_LIMIT)
 				shootCounter++;
+			else if(imageState == SHOOTING)
+				imageState = NEUTRAL;
 			ArrayList<Bullet> shitlist = new ArrayList<Bullet>();
 			for(Bullet bullet : bullets)
 			{
@@ -62,14 +72,12 @@ public class Ship extends SpaceObject{
 	@Override
 	public void draw(Graphics g)
 	{
-		if(state == ALIVE)
+		picture = imageList[imageState];
+		for(Bullet bullet : bullets)
 		{
-			for(Bullet bullet : bullets)
-			{
-				bullet.draw(g);
-			}
-			super.draw(g);
+			bullet.draw(g);
 		}
+		super.draw(g);
 	}
 	
 	protected void applyAcceleration()
@@ -110,6 +118,7 @@ public class Ship extends SpaceObject{
 		shootReady = false;
 		if(bullets.size() < MAX_BULLETS)
 		{
+			imageState = SHOOTING;
 			Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
 			rotatePoint(bulletLocation);
 			Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle, enemy, screenDimensions);
@@ -178,6 +187,16 @@ public class Ship extends SpaceObject{
 		}
 	}
 	
+	@Override
+	protected void setupImages()
+	{
+		imageList = new Image[3];
+		imageList[NEUTRAL] = readImage(imageFileColor+"Ship.png");
+		imageList[SHOOTING] = readImage(imageFileColor+"ShipShoot.png");
+		imageList[BLOWUP] = readImage("explosion.png");
+		picture = imageList[NEUTRAL];
+	}
+	
 	public void keyPressed(int key)
 	{
 		buttons.keyDown(key);
@@ -196,6 +215,7 @@ public class Ship extends SpaceObject{
 	public void hit()
 	{
 		state = DEAD;
+		imageState = BLOWUP;
 	}
 	
 	public Point2D.Double getPoint(int i)

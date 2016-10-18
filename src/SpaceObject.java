@@ -19,21 +19,16 @@ public abstract class SpaceObject {
 	protected double maxSpeed;
 	protected Dimension screenDimensions;
 	
-	public SpaceObject(Rectangle2D.Double box, double maxSpeed, String imageFile, Dimension screen)
+	public SpaceObject(Rectangle2D.Double box, double maxSpeed, Dimension screen)
 	{
 		this.box = box;
 		this.linearSpeed = new Point2D.Double(0, 0);
 		this.maxSpeed = maxSpeed;
 		this.screenDimensions = screen;
-		try{
-			picture = ImageIO.read(new File(imageFile));
-		} catch(IOException e){
-			System.err.println("Image not found. Game will exit");
-			System.exit(0);
-		}
 	}
 	
 	protected abstract void applyAcceleration();
+	protected abstract void setupImages();
 	
 	public int update()
 	{
@@ -87,5 +82,17 @@ public abstract class SpaceObject {
 			box.y = 0;
 		else if(box.y < 0)
 			box.y = screenDimensions.height - box.height;
+	}
+	
+	protected Image readImage(String fileName)
+	{
+		Image picture = null;
+		try{
+			picture = ImageIO.read(new File("resource/"+fileName));
+		} catch(IOException e){
+			System.err.println("Image not found. Game will exit");
+			System.exit(0);
+		}
+		return picture;
 	}
 }
