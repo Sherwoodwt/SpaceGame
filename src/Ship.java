@@ -8,11 +8,11 @@ import java.io.*;
 
 public class Ship extends SpaceObject{
 
-	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4;
-	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20;
+	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4, MISSLE=5;
+	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20, MAX_MISSLES = 1;
 	private static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
 	
-	protected ArrayList<Bullet> bullets;
+	protected ArrayList<Weapon> weapons;
 	protected ArrayList<VaporTrail> vaporTrails;
 	private int shootCounter;
 	private boolean shootReady;
@@ -38,7 +38,7 @@ public class Ship extends SpaceObject{
 		for(int i = 0; i < points.length; i++)
 			points[i] = new Point2D.Double();
 		state = ALIVE;
-		bullets = new ArrayList<Bullet>();
+		weapons = new ArrayList<Weapon>();
 		vaporTrails = new ArrayList<VaporTrail>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 	}
@@ -55,16 +55,16 @@ public class Ship extends SpaceObject{
 				shootCounter++;
 			else if(imageState == SHOOTING)
 				imageState = NEUTRAL;
-			ArrayList<Bullet> shitlist = new ArrayList<Bullet>();
-			for(Bullet bullet : bullets)
+			ArrayList<Weapon> shitlist = new ArrayList<Weapon>();
+			for(Weapon weapon : weapons)
 			{
-				int result = bullet.update();
+				int result = weapon.update();
 				if(result == 0)
-					shitlist.add(bullet);
+					shitlist.add(weapon);
 			}
-			for(Bullet bullet : shitlist)
+			for(Weapon weapon : shitlist)
 			{
-				bullets.remove(bullet);
+				weapons.remove(weapon);
 			}
 			shitlist = null;
 			
@@ -94,9 +94,9 @@ public class Ship extends SpaceObject{
 	public void draw(Graphics g)
 	{
 		picture = imageList[imageState];
-		for(Bullet bullet : bullets)
+		for(Weapon weapon : weapons)
 		{
-			bullet.draw(g);
+			weapon.draw(g);
 		}
 		for(VaporTrail v : vaporTrails)
 		{
@@ -141,13 +141,27 @@ public class Ship extends SpaceObject{
 	protected void shoot()
 	{
 		shootReady = false;
-		if(bullets.size() < MAX_BULLETS)
+		if(weapons.size() < MAX_BULLETS)
 		{
 			imageState = SHOOTING;
-			Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y + box.height/2);
+			Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y);
 			rotatePoint(bulletLocation);
 			Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle, enemy, screenDimensions);
-			bullets.add(newBullet);
+			weapons.add(newBullet);
+			shootCounter = 0;
+		}
+	}
+	
+	protected void shootMissle()
+	{
+		shootReady = false;
+		if(weapons.size() < MAX_MISSLES)
+		{
+			imageState = SHOOTING;
+			Point2D.Double missleLocation = new Point2D.Double(box.x + box.width/2, box.y);
+			rotatePoint(missleLocation);
+			Missle newMissle = new Missle(new Rectangle2D.Double(missleLocation.x, missleLocation.y, box.width/2, box.height/2), angle, enemy, screenDimensions);
+			weapons.add(newMissle);
 			shootCounter = 0;
 		}
 	}
@@ -171,14 +185,16 @@ public class Ship extends SpaceObject{
 			rotateClockwise();
 		if(buttons.isDown(SHOOT) && canShoot())
 			shoot();
-		else if(!buttons.isDown(SHOOT))
+		else if(buttons.isDown(MISSLE) && canShoot())
+			shootMissle();
+		else if(!buttons.isDown(SHOOT) && !buttons.isDown(MISSLE))
 			shootReady = true;
 	}
 	
 	private int[] setupButtons(String controlFile)
 	{
 		Scanner fin = null;
-		int[] buttons = new int[5];
+		int[] buttons = new int[6];
 		try{
 			fin = new Scanner(new File(controlFile));
 			int counter = 0;

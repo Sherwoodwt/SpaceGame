@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.geom.Point2D.Double;
 import java.io.*;
 import java.awt.event.KeyEvent;
 
@@ -94,5 +95,10 @@ public abstract class SpaceObject {
 			System.exit(0);
 		}
 		return picture;
+	}
+	
+	public Point2D.Double getCenter()
+	{
+		return new Point2D.Double(box.x+box.width/2, box.y+box.height/2);
 	}
 }
