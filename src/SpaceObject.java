@@ -2,11 +2,12 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Double;
 import java.io.*;
+import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 
 import javax.imageio.ImageIO;
 
-public abstract class SpaceObject {
+public abstract class SpaceObject implements Drawable {
 
 	public static final double INCREMENT = .05, ROTATION_INC = .03;
 	
@@ -19,6 +20,12 @@ public abstract class SpaceObject {
 	protected Image picture;
 	protected double maxSpeed;
 	protected Dimension screenDimensions;
+	protected int state;
+	protected Collider collider;
+	
+	protected ArrayList<Ship> enemies;
+	
+	protected Point2D.Double[] points;
 	
 	public SpaceObject(Rectangle2D.Double box, double maxSpeed, Dimension screen)
 	{
@@ -26,16 +33,35 @@ public abstract class SpaceObject {
 		this.linearSpeed = new Point2D.Double(0, 0);
 		this.maxSpeed = maxSpeed;
 		this.screenDimensions = screen;
+		this.setupImages();
+		this.setupPoints();
+		this.updatePoints();
+		this.setupCollider();
+		this.state = ALIVE;
+		enemies = new ArrayList<Ship>();
 	}
 	
 	protected abstract void applyAcceleration();
 	protected abstract void setupImages();
+	protected abstract void setupPoints();
+	protected abstract void updatePoints();
+	protected abstract void setupCollider();
 	
 	public int update()
 	{
 		changeLocation();
 		wrapScreen();
-		return 0;
+		updatePoints();
+		rotatePoints();
+		for(Ship enemy : enemies)
+		{
+			if(collider.checkCollision(enemy))
+			{
+				enemy.hit();
+				this.state = DEAD;
+			}
+		}
+		return state;
 	}
 	
 	public void draw(Graphics g)
@@ -58,6 +84,14 @@ public abstract class SpaceObject {
 		}
 		box.x += linearSpeed.x;
 		box.y -= linearSpeed.y;
+	}
+	
+	private void rotatePoints()
+	{
+		for(int i = 0; i < points.length; i++)
+		{
+			rotatePoint(points[i]);
+		}
 	}
 	
 	protected void rotatePoint(Point2D.Double point)
@@ -92,6 +126,7 @@ public abstract class SpaceObject {
 			picture = ImageIO.read(new File("resource/"+fileName));
 		} catch(IOException e){
 			System.err.println("Image not found. Game will exit");
+			System.err.println(e.toString());
 			System.exit(0);
 		}
 		return picture;
@@ -100,5 +135,20 @@ public abstract class SpaceObject {
 	public Point2D.Double getCenter()
 	{
 		return new Point2D.Double(box.x+box.width/2, box.y+box.height/2);
+	}
+	
+	public Point2D.Double getPoint(int i)
+	{
+		return points[i];
+	}
+	
+	public int getNumberOfPoints()
+	{
+		return points.length;
+	}
+	
+	public void addEnemy(Ship s)
+	{
+		enemies.add(s);
 	}
 }

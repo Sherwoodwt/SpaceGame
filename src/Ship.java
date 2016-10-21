@@ -6,40 +6,27 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
-public class Ship extends SpaceObject{
+public abstract class Ship extends SpaceObject{
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4, MISSLE=5;
 	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20, MAX_MISSLES = 1;
-	private static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
+	protected static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
 	
 	protected ArrayList<Weapon> weapons;
-	protected ArrayList<VaporTrail> vaporTrails;
 	private int shootCounter;
 	private boolean shootReady;
 	protected ButtonManager buttons;
-	private int state;
 	
 	protected int imageState;
 	protected Image[] imageList;
 	
-	private Point2D.Double[] points;
-	
-	private Ship enemy;
-	
 	private String imageFileColor;
 	
 	
-	public Ship(Rectangle2D.Double box, String imageFileColor, String controlFile, Dimension screen)
+	public Ship(Rectangle2D.Double box, String controlFile, Dimension screen)
 	{
 		super(box, 1.5, screen);
-		this.imageFileColor = imageFileColor;
-		setupImages();
-		points = new Point2D.Double[3];
-		for(int i = 0; i < points.length; i++)
-			points[i] = new Point2D.Double();
-		state = ALIVE;
 		weapons = new ArrayList<Weapon>();
-		vaporTrails = new ArrayList<VaporTrail>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 	}
 	
@@ -48,44 +35,18 @@ public class Ship extends SpaceObject{
 	{
 		if(state == ALIVE)
 		{
-			super.update();
-			setupPoints();
+			state = super.update();
+			if(state == DEAD)
+				this.hit();
 			handleInputs();
+			
 			if(shootCounter < SHOOT_LIMIT)
 				shootCounter++;
 			else if(imageState == SHOOTING)
 				imageState = NEUTRAL;
-			ArrayList<Weapon> shitlist = new ArrayList<Weapon>();
-			for(Weapon weapon : weapons)
-			{
-				int result = weapon.update();
-				if(result == 0)
-					shitlist.add(weapon);
-			}
-			for(Weapon weapon : shitlist)
-			{
-				weapons.remove(weapon);
-			}
-			shitlist = null;
 			
-			for(int i = 0; i < points.length; i++)
-			{
-				vaporTrails.add(new VaporTrail(new Rectangle2D.Double(points[i].x, points[i].y, box.width/10, box.height/10),
-								0, screenDimensions));
-			}
+			updateWeapons();
 			
-			ArrayList<VaporTrail> shitlist2 = new ArrayList<VaporTrail>();
-			for(VaporTrail v : vaporTrails)
-			{
-				int result = v.update();
-				if(result == DEAD)
-					shitlist2.add(v);
-			}
-			for(VaporTrail v : shitlist2)
-			{
-				vaporTrails.remove(v);
-			}
-			shitlist2 = null;
 		}
 		return state;
 	}
@@ -96,15 +57,13 @@ public class Ship extends SpaceObject{
 		picture = imageList[imageState];
 		for(Weapon weapon : weapons)
 		{
-			weapon.draw(g);
-		}
-		for(VaporTrail v : vaporTrails)
-		{
-			v.draw(g);
+			if(weapon.state != DEAD)
+				weapon.draw(g);
 		}
 		super.draw(g);
 	}
 	
+	@Override
 	protected void applyAcceleration()
 	{
 		linearSpeed.x += acceleration * (Math.sin(angle));
@@ -116,6 +75,22 @@ public class Ship extends SpaceObject{
 		acceleration = 0;
 		linearSpeed.x = linearSpeed.x * .99;
 		linearSpeed.y = linearSpeed.y * .99;
+	}
+	
+	protected void updateWeapons()
+	{
+		ArrayList<Weapon> shitlist = new ArrayList<Weapon>();
+		for(Weapon weapon : weapons)
+		{
+			int result = weapon.update();
+			if(result == 0)
+				shitlist.add(weapon);
+		}
+		for(Weapon weapon : shitlist)
+		{
+			weapons.remove(weapon);
+		}
+		shitlist = null;
 	}
 	
 	protected void forward()
@@ -138,32 +113,31 @@ public class Ship extends SpaceObject{
 		angle += ROTATION_INC;
 	}
 	
-	protected void shoot()
+	protected void shoot(Weapon weapon)
 	{
 		shootReady = false;
 		if(weapons.size() < MAX_BULLETS)
 		{
 			imageState = SHOOTING;
-			Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y);
-			rotatePoint(bulletLocation);
-			Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle, enemy, screenDimensions);
-			weapons.add(newBullet);
+			weapons.add(weapon);
 			shootCounter = 0;
 		}
 	}
 	
+	protected void shootBullet()
+	{
+		Point2D.Double bulletLocation = new Point2D.Double(box.x + box.width/2, box.y);
+		rotatePoint(bulletLocation);
+		Bullet newBullet = new Bullet(new Rectangle2D.Double(bulletLocation.x, bulletLocation.y, box.width/10, box.height/10), angle, enemies, screenDimensions);
+		shoot(newBullet);
+	}
+	
 	protected void shootMissle()
 	{
-		shootReady = false;
-		if(weapons.size() < MAX_MISSLES)
-		{
-			imageState = SHOOTING;
-			Point2D.Double missleLocation = new Point2D.Double(box.x + box.width/2, box.y);
-			rotatePoint(missleLocation);
-			Missle newMissle = new Missle(new Rectangle2D.Double(missleLocation.x, missleLocation.y, box.width/2, box.height/2), angle, enemy, screenDimensions);
-			weapons.add(newMissle);
-			shootCounter = 0;
-		}
+		Point2D.Double missleLocation = new Point2D.Double(box.x + box.width/2, box.y);
+		rotatePoint(missleLocation);
+		Missle newMissle = new Missle(new Rectangle2D.Double(missleLocation.x, missleLocation.y, box.width/2, box.height/2), angle, enemies, screenDimensions);
+		shoot(newMissle);
 	}
 	
 	private boolean canShoot()
@@ -184,7 +158,7 @@ public class Ship extends SpaceObject{
 		else if(buttons.isDown(RIGHT))
 			rotateClockwise();
 		if(buttons.isDown(SHOOT) && canShoot())
-			shoot();
+			shootBullet();
 		else if(buttons.isDown(MISSLE) && canShoot())
 			shootMissle();
 		else if(!buttons.isDown(SHOOT) && !buttons.isDown(MISSLE))
@@ -214,7 +188,22 @@ public class Ship extends SpaceObject{
 		return buttons;
 	}
 	
-	private void setupPoints()
+	@Override
+	protected void setupCollider()
+	{
+		this.collider = new PointInterceptCollider(this);
+	}
+	
+	@Override
+	protected void setupPoints()
+	{
+		points = new Point2D.Double[3];
+		for(int i = 0; i < points.length; i++)
+			points[i] = new Point2D.Double();
+	}
+	
+	@Override
+	protected void updatePoints()
 	{
 		points[0].x = box.x+box.width/2;
 		points[0].y = box.y;
@@ -222,20 +211,6 @@ public class Ship extends SpaceObject{
 		points[1].y = box.y+box.height;
 		points[2].x = box.x+box.width;
 		points[2].y = box.y+box.height;
-		for(int i= 0; i < points.length; i++)
-		{
-			rotatePoint(points[i]);
-		}
-	}
-	
-	@Override
-	protected void setupImages()
-	{
-		imageList = new Image[3];
-		imageList[NEUTRAL] = readImage(imageFileColor+"Ship.png");
-		imageList[SHOOTING] = readImage(imageFileColor+"ShipShoot.png");
-		imageList[BLOWUP] = readImage("explosion.png");
-		picture = imageList[NEUTRAL];
 	}
 	
 	public void keyPressed(int key)
@@ -248,19 +223,9 @@ public class Ship extends SpaceObject{
 		buttons.keyUp(key);
 	}
 	
-	public void setEnemy(Ship e)
-	{
-		enemy = e;
-	}
-	
 	public void hit()
 	{
 		state = DEAD;
 		imageState = BLOWUP;
-	}
-	
-	public Point2D.Double getPoint(int i)
-	{
-		return points[i];
 	}
 }

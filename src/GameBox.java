@@ -44,13 +44,17 @@ public class GameBox extends JPanel{
 		{
 			int state1 = ship1.update();
 			int state2 = ship2.update();
-			if(state1 == Ship.DEAD)
+			if(state1 == Ship.DEAD && state2 == Ship.ALIVE)
 			{
 				score2 += shipKilled();
 			}
-			else if(state2 == Ship.DEAD)
+			else if(state2 == Ship.DEAD && state1 == Ship.ALIVE)
 			{
 				score1 += shipKilled();
+			}
+			else if(state1 == Ship.DEAD || state2 == Ship.DEAD)
+			{
+				shipKilled();
 			}
 		}
 		else if(state == SCORE)
@@ -130,10 +134,10 @@ public class GameBox extends JPanel{
 	
 	private void resetShips()
 	{
-		ship1 = new Ship(new Rectangle2D.Double(200, 200, 20, 20), "green", "resource/player1config.cnfg", screenDimensions);
-		ship2 = new Ship(new Rectangle2D.Double(400, 400, 20, 20), "blue", "resource/player2config.cnfg", screenDimensions);
-		ship1.setEnemy(ship2);
-		ship2.setEnemy(ship1);
+		ship1 = new GreenShip(new Rectangle2D.Double(200, 200, 20, 20), "resource/player1config.cnfg", screenDimensions);
+		ship2 = new BlueShip(new Rectangle2D.Double(400, 400, 20, 20), "resource/player2config.cnfg", screenDimensions);
+		ship1.addEnemy(ship2);
+		ship2.addEnemy(ship1);
 	}
 
 	

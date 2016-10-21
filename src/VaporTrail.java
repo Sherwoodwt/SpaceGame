@@ -1,21 +1,24 @@
 import java.awt.geom.*;
 import java.awt.*;
 
-public class VaporTrail extends SpaceObject {
+public class VaporTrail implements Drawable{
 	
 	private static final int MAX_COUNT=12;
+	private static final double WIDTH=2, HEIGHT=2;
+	
+	public static final int DEAD = 0, ALIVE = 1;
 	
 	private int counter;
+	private Rectangle2D.Double box;
 
-	public VaporTrail(Rectangle2D.Double box, double angle, Dimension screen)
+	public VaporTrail(Point2D.Double location)
 	{
-		super(box, 0, screen);
-		setupImages();
+		box = new Rectangle2D.Double(location.x, location.y, WIDTH, HEIGHT);
+		counter = 0;
 	}
 	
 	public int update()
 	{
-		super.update();
 		counter++;
 		if(counter > MAX_COUNT)
 			return DEAD;
@@ -27,15 +30,5 @@ public class VaporTrail extends SpaceObject {
 		int value = (255/20) * (counter-1);
 		g.setColor(new Color(value, value, value));
 		g.fillRect((int)box.x, (int)box.y, (int)box.width, (int)box.height);
-	}
-	
-	protected void setupImages()
-	{
-		picture = null;
-	}
-	
-	protected void applyAcceleration()
-	{
-		
 	}
 }
