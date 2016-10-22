@@ -17,6 +17,8 @@ public abstract class Ship extends SpaceObject{
 	private boolean shootReady;
 	protected ButtonManager buttons;
 	
+	private int numMissles;
+	
 	protected int imageState;
 	protected Image[] imageList;
 	
@@ -28,6 +30,7 @@ public abstract class Ship extends SpaceObject{
 		super(box, 1.5, screen);
 		weapons = new ArrayList<Weapon>();
 		buttons = new ButtonManager(setupButtons(controlFile));
+		numMissles = 3;
 	}
 	
 	@Override
@@ -93,26 +96,6 @@ public abstract class Ship extends SpaceObject{
 		shitlist = null;
 	}
 	
-	protected void forward()
-	{
-		acceleration = INCREMENT;
-	}
-	
-	protected void backward()
-	{
-		acceleration = -INCREMENT;
-	}
-	
-	protected void rotateCounterClockwise()
-	{
-		angle -= ROTATION_INC;
-	}
-	
-	protected void rotateClockwise()
-	{
-		angle += ROTATION_INC;
-	}
-	
 	protected void shoot(Weapon weapon)
 	{
 		shootReady = false;
@@ -134,10 +117,14 @@ public abstract class Ship extends SpaceObject{
 	
 	protected void shootMissle()
 	{
-		Point2D.Double missleLocation = new Point2D.Double(box.x + box.width/2, box.y);
-		rotatePoint(missleLocation);
-		Missle newMissle = new Missle(new Rectangle2D.Double(missleLocation.x, missleLocation.y, box.width/2, box.height/2), angle, enemies, screenDimensions);
-		shoot(newMissle);
+		if(numMissles > 0)
+		{
+			Point2D.Double missleLocation = new Point2D.Double(box.x + box.width/2, box.y);
+			rotatePoint(missleLocation);
+			Missle newMissle = new Missle(new Rectangle2D.Double(missleLocation.x, missleLocation.y, box.width/2, box.height/2), angle, enemies, screenDimensions);
+			shoot(newMissle);
+			numMissles--;
+		}
 	}
 	
 	private boolean canShoot()
@@ -148,9 +135,9 @@ public abstract class Ship extends SpaceObject{
 	private void handleInputs()
 	{
 		if(buttons.isDown(FORWARD))
-			forward();
+			accelerateForward();
 		else if(buttons.isDown(BACKWARD))
-			backward();
+			accelerateBackward();
 		else
 			normalize();
 		if(buttons.isDown(LEFT))

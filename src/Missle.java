@@ -12,8 +12,9 @@ public class Missle extends Weapon {
 
 	public Missle(Double box, double angle, ArrayList<Ship> enemies, Dimension screen)
 	{
-		super(box, angle, enemies, screen, 300);
+		super(box, 3, enemies, screen, 400);
 		vaporTrails = new ArrayList<VaporTrail>();
+		this.angle = angle;
 	}
 
 	@Override
@@ -23,16 +24,29 @@ public class Missle extends Weapon {
 		Point2D.Double myCenter = this.getCenter();
 		double xDist = enemyCenter.x - myCenter.x;
 		double yDist = enemyCenter.y - myCenter.y;
-		double goalAngle = Math.atan2(xDist, yDist);
-		//CHANGE THE ANGLE
-		if(goalAngle < angle)
-			angle -= ROTATION_INC;
-		else if(goalAngle > angle)
-			angle += ROTATION_INC;
+		double goalAngle = Math.atan2(xDist, -yDist);
+		changeAngle(goalAngle);
 		//CHANGE ACCELERATION TO MATCH NEW ANGLE
 		acceleration = INCREMENT;
 		linearSpeed.x += acceleration * (Math.sin(angle));
 		linearSpeed.y += acceleration * (Math.cos(angle));
+	}
+	
+	private void changeAngle(double goalAngle)
+	{
+		if(goalAngle < 0)
+			goalAngle = 2*Math.PI + goalAngle;
+		double difference = Math.abs(goalAngle - angle);
+		if((goalAngle < angle && difference < Math.PI) || (goalAngle > angle && difference >= Math.PI))
+		{
+			rotateCounterClockwise();
+			rotateCounterClockwise();
+		}
+		else if((goalAngle > angle && difference < Math.PI) || (goalAngle < angle && difference >= Math.PI))
+		{
+			rotateClockwise();
+			rotateClockwise();
+		}
 	}
 
 	@Override
@@ -54,6 +68,14 @@ public class Missle extends Weapon {
 			v.draw(g);
 		}
 		super.draw(g);
+	}
+	
+	@Override
+	public int update()
+	{
+		int result = super.update();
+		updateVaporTrails();
+		return result;
 	}
 
 	private void updateVaporTrails()

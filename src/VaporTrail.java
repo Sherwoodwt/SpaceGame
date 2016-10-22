@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class VaporTrail implements Drawable{
 	
-	private static final int MAX_COUNT=12;
+	private static final int MAX_COUNT=6;
 	private static final double WIDTH=2, HEIGHT=2;
 	
 	public static final int DEAD = 0, ALIVE = 1;

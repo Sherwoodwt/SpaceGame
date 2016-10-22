@@ -132,6 +132,28 @@ public abstract class SpaceObject implements Drawable {
 		return picture;
 	}
 	
+	protected void accelerateForward()
+	{
+		acceleration = INCREMENT;
+	}
+	
+	protected void accelerateBackward()
+	{
+		acceleration = -INCREMENT;
+	}
+	
+	protected void rotateCounterClockwise()
+	{
+		angle -= ROTATION_INC;
+		if(angle < 0)
+			angle = (2*Math.PI) + angle;
+	}
+	
+	protected void rotateClockwise()
+	{
+		angle = (angle + ROTATION_INC) % (2*Math.PI);
+	}
+	
 	public Point2D.Double getCenter()
 	{
 		return new Point2D.Double(box.x+box.width/2, box.y+box.height/2);
