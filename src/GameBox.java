@@ -147,7 +147,7 @@ public class GameBox extends JPanel{
 		{
 			if(state == PAUSE && e.getKeyCode() == KeyEvent.VK_Q)
 			{
-				//quit to main menu
+				System.exit(1);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 				pause();
