@@ -62,7 +62,7 @@ public class GameBox extends JPanel{
 		}
 	}
 	
-	public void draw()
+	public void draw(double interpolation)
 	{
 		Graphics g = this.getGraphics();
 		BufferedImage bfImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -72,8 +72,8 @@ public class GameBox extends JPanel{
 		bg.fillRect(0,  0, WIDTH, HEIGHT);
 		if(state == PLAY)
 		{
-			ship1.draw(bg);
-			ship2.draw(bg);
+			ship1.draw(bg, interpolation);
+			ship2.draw(bg, interpolation);
 		}
 		else if(state == PAUSE)
 		{

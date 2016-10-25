@@ -64,7 +64,7 @@ public abstract class SpaceObject implements Drawable {
 		return state;
 	}
 	
-	public void draw(Graphics g)
+	public void draw(Graphics g, double interpolation)
 	{
 		Graphics2D g2 = (Graphics2D)g;
 		g2.rotate(angle, box.x+(box.width/2), box.y+(box.height/2));
