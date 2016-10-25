@@ -12,7 +12,9 @@ public class Missle extends Weapon {
 
 	public Missle(Double box, double angle, ArrayList<Ship> enemies, Dimension screen)
 	{
-		super(box, 3, enemies, screen, 400);
+		super(box, 6, enemies, screen, 500);
+		box.width = 10;
+		box.height = 15;
 		vaporTrails = new ArrayList<VaporTrail>();
 		this.angle = angle;
 	}

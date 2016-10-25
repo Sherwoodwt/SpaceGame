@@ -6,7 +6,7 @@ public class Bullet extends Weapon{
 	
 	public Bullet(Rectangle2D.Double box, double angle, ArrayList<Ship> enemies, Dimension screen)
 	{
-		super(box, 3, enemies, screen, 200);
+		super(box, 8, enemies, screen, 80);
 		box.width = 3;
 		box.height = 3;
 		linearSpeed.x = Math.sin(angle) * 20;

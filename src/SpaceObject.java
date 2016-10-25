@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 public abstract class SpaceObject implements Drawable {
 
-	public static final double INCREMENT = .05, ROTATION_INC = .03;
+	public static final double INCREMENT = .25, ROTATION_INC = .1;
 	
 	public static int DEAD=0, ALIVE=1;
 	

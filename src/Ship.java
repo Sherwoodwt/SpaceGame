@@ -9,7 +9,7 @@ import java.io.*;
 public abstract class Ship extends SpaceObject{
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4, MISSLE=5;
-	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 20, MAX_MISSLES = 1;
+	private static int MAX_BULLETS = 5, SHOOT_LIMIT = 10, MAX_MISSLES = 1;
 	protected static int NEUTRAL=0, SHOOTING=1, BLOWUP=2;
 	
 	protected ArrayList<Weapon> weapons;
@@ -27,7 +27,7 @@ public abstract class Ship extends SpaceObject{
 	
 	public Ship(Rectangle2D.Double box, String controlFile, Dimension screen)
 	{
-		super(box, 1.5, screen);
+		super(box, 5, screen);
 		weapons = new ArrayList<Weapon>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 		numMissles = 3;
