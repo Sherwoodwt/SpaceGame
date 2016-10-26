@@ -45,7 +45,7 @@ public class SpaceGame {
 			 * interpolation is basically what portion of SKIP_TICKS amount of time has passed.
 			 */
 			interpolation = (double)((System.nanoTime() -time) + SKIP_TICKS)/((double)(SKIP_TICKS));
-			box.draw(interpolation);
+			box.draw();
 		}
 	}
 }
