@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -135,12 +136,13 @@ public class GameBox extends JPanel{
 	
 	private void resetShips()
 	{
-		ship1 = new GreenShip(new Rectangle2D.Double(200, 200, 20, 20), "resource/player1config.cnfg", screenDimensions);
-		ship2 = new BlueShip(new Rectangle2D.Double(400, 400, 20, 20), "resource/player2config.cnfg", screenDimensions);
+		ship1 = new GreenShip(new Rectangle2D.Double(WIDTH/4, HEIGHT/2, 20, 20), "resource/player1config.cnfg", screenDimensions);
+		ship2 = new BlueShip(new Rectangle2D.Double(WIDTH*3/4, HEIGHT/2, 20, 20), "resource/player2config.cnfg", screenDimensions);
 		ship1.addEnemy(ship2);
 		ship2.addEnemy(ship1);
 		
-		asteroid = new Asteroid(new Rectangle2D.Double(600, 600, 50, 50), screenDimensions);
+		Random randy = new Random();
+		asteroid = new Asteroid(new Rectangle2D.Double(randy.nextInt(WIDTH), randy.nextInt(HEIGHT), 50, 50), screenDimensions);
 		asteroid.addEnemy(ship1);
 		asteroid.addEnemy(ship2);
 	}
