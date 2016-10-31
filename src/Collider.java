@@ -34,4 +34,11 @@ public abstract class Collider {
 		}
 		return counter >= enemy.getNumberOfPoints();
 	}
+	
+	protected double getDistance(Point2D.Double start, Point2D.Double end)
+	{
+		double xDif = end.x - start.x;
+		double yDif = end.y - start.y;
+		return Math.sqrt(xDif*xDif + yDif*yDif);
+	}
 }

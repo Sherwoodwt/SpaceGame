@@ -14,6 +14,7 @@ public class GameBox extends JPanel{
 	private Dimension screenDimensions;
 	private Ship ship1;
 	private Ship ship2;
+	private Asteroid asteroid;
 	private int state;
 	private int score1, score2;
 	
@@ -43,6 +44,7 @@ public class GameBox extends JPanel{
 		{
 			int state1 = ship1.update();
 			int state2 = ship2.update();
+			asteroid.update();
 			if(state1 == Ship.DEAD && state2 == Ship.ALIVE)
 			{
 				score2 += shipKilled();
@@ -74,6 +76,7 @@ public class GameBox extends JPanel{
 		{
 			ship1.draw(bg);
 			ship2.draw(bg);
+			asteroid.draw(bg);
 		}
 		else if(state == PAUSE)
 		{
@@ -136,6 +139,10 @@ public class GameBox extends JPanel{
 		ship2 = new BlueShip(new Rectangle2D.Double(400, 400, 20, 20), "resource/player2config.cnfg", screenDimensions);
 		ship1.addEnemy(ship2);
 		ship2.addEnemy(ship1);
+		
+		asteroid = new Asteroid(new Rectangle2D.Double(600, 600, 50, 50), screenDimensions);
+		asteroid.addEnemy(ship1);
+		asteroid.addEnemy(ship2);
 	}
 
 	

@@ -12,6 +12,7 @@ public class PointInterceptCollider extends Collider {
 	public boolean checkCollision(Ship enemy)
 	{
 		boolean collision = false;
+		
 		for(int i = 0; i < owner.getNumberOfPoints(); i++)
 		{
 			if(this.checkCrossForPoint(owner.getPoint(i), enemy))
