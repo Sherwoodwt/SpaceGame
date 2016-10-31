@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+
 public abstract class Ship extends SpaceObject{
 
 	public static final int FORWARD=0, BACKWARD=1, LEFT=2, RIGHT=3, SHOOT=4, MISSLE=5;
@@ -24,6 +29,8 @@ public abstract class Ship extends SpaceObject{
 	
 	private String imageFileColor;
 	
+	protected Clip clip;
+	
 	
 	public Ship(Rectangle2D.Double box, String controlFile, Dimension screen)
 	{
@@ -31,6 +38,20 @@ public abstract class Ship extends SpaceObject{
 		weapons = new ArrayList<Weapon>();
 		buttons = new ButtonManager(setupButtons(controlFile));
 		numMissles = 3;
+		
+		File laserSound = new File("resource/laser.wav");
+		try
+		{
+			AudioInputStream input = AudioSystem.getAudioInputStream(laserSound);
+			DataLine.Info info = new DataLine.Info(Clip.class, input.getFormat());
+			clip = (Clip)AudioSystem.getLine(info);
+			clip.open(AudioSystem.getAudioInputStream(laserSound));
+		}
+		catch(Exception e)
+		{
+			System.out.println("failed to load soundaffect");
+			System.exit(1);
+		}
 	}
 	
 	@Override
@@ -49,7 +70,6 @@ public abstract class Ship extends SpaceObject{
 				imageState = NEUTRAL;
 			
 			updateWeapons();
-			
 		}
 		return state;
 	}
@@ -104,6 +124,10 @@ public abstract class Ship extends SpaceObject{
 			imageState = SHOOTING;
 			weapons.add(weapon);
 			shootCounter = 0;
+			
+			clip.stop();
+			clip.setMicrosecondPosition(0);
+			clip.start();
 		}
 	}
 	
